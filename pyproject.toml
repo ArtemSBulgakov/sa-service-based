@@ -1,0 +1,34 @@
+[tool.poetry]
+name = "sa-service-based"
+version = "1.0.0"
+description = ""
+authors = ["Artem Bulgakov <ArtemSBulgakov@ya.ru>"]
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.12.0"
+authlib = "^1.2.1"
+beanie = "^1.25.0"
+colorlog = "^6.8.2"
+fastapi = "^0.115.0"
+fastapi-swagger = "^0.2.3"
+gunicorn = "23.0.0"
+httpx = "^0.27.0"
+itsdangerous = "^2.1.2"
+pydantic = {extras = ["email"], version = "^2.6.3"}
+python-multipart = "^0.0.10"
+pyyaml = "^6.0.1"
+uvicorn = "^0.31.0"
+
+[tool.ruff]
+line-length = 120
+lint.ignore = [
+    # wildcard imports are fine
+    "F403",
+    "F405",
+]
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

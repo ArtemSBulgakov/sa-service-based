@@ -1,0 +1,55 @@
+services:
+
+  # API Gateway for all services
+  nginx:
+    # See more: https://registry.hub.docker.com/_/nginx
+    image: "nginx:1.27"
+    depends_on:
+      - users-service
+      - messages-service
+      - likes-service
+    ports:
+      - "80:80"
+    volumes:
+      - "./api-gateway/nginx.conf:/etc/nginx/nginx.conf:ro"
+      - "./api-gateway/conf.d:/etc/nginx/conf.d:ro"
+
+  # Mongo Database for all services
+  mongo:
+    # See more: https://registry.hub.docker.com/_/mongo
+    image: "mongo:8.0"
+    volumes:
+      - "mongo:/data/db"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME:-root}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD:-root}
+
+  # Service 1. Users
+  users-service:
+    build: . # See more in Dockerfile
+    depends_on: [ mongo ]
+    volumes:
+      - "./users-service:/code"
+    environment:
+      DB: ${DB:-mongodb://root:root@mongo:27017/db?authSource=admin}
+
+  # Service 2. Short messages
+  messages-service:
+    build: . # See more in Dockerfile
+    depends_on: [ mongo ]
+    volumes:
+      - "./messages-service:/code"
+    environment:
+      DB: ${DB:-mongodb://root:root@mongo:27017/db?authSource=admin}
+
+  # Service 3. Likes for messages
+  likes-service:
+    build: . # See more in Dockerfile
+    depends_on: [ mongo ]
+    volumes:
+      - "./likes-service:/code"
+    environment:
+      DB: ${DB:-mongodb://root:root@mongo:27017/db?authSource=admin}
+
+volumes:
+  mongo:
